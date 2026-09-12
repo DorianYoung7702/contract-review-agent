@@ -1,4 +1,4 @@
-# Private source publication
+# Source publication
 
 This repository contains the current application source, tests, example configuration, and deployment scripts.
 

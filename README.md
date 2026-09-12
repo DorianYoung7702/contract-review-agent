@@ -71,7 +71,7 @@ flowchart TD
 
 ### 1. 获取代码并准备配置
 
-私有仓库需要具备访问权限的 GitHub 账号。
+克隆仓库后，准备本地环境配置：
 
 ```powershell
 git clone https://github.com/DorianYoung7702/contract-review-agent.git
