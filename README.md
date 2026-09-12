@@ -1,360 +1,213 @@
-# 合同审查
+# Contract Review Agent · 合同审查智能体
 
-> 基于 AI 的中文合同审查与知识库增强平台，支持合同风险分析、OnlyOffice 在线审阅、法律知识检索与智能问答。
+面向企业合同审查的 AI 应用，覆盖文件接入、审查立场识别、法律知识检索、风险分析、规则审批、红线修订与人工确认。将合同理解、规则判断和文档操作组织为可追踪的业务流程，辅助法务与业务人员完成审查和修改。
 
-## ✨ Features
+**维护者：杨朕骁 / [DorianYoung7702](https://github.com/DorianYoung7702)**  
+**工程方向：Agent Harness · RAG · 规则决策 · Human-in-the-loop · 文档自动化**
 
-- 📄 合同上传与 AI 预分析
-  - 支持 DOCX / PDF 上传，自动检测扫描件并提示
-  - 自动识别合同类型、主体信息与审查范围
-  - 异步分析任务，Socket.IO 实时推送进度与 ETA
-- ⚖️ 合同风险审查
-  - 输出风险点、修改建议、相关法条与审查理由
-  - 风险仪表盘：整体风险等级 + 高/中/低分级筛选排序
-  - 违约成本分析与法律依据引用（citations）渲染
-  - 专项审查持久化，支持历史记录查看与恢复
-  - 支持关联裁判文书增强分析
-  - 谈判博弈模拟：对修改建议反向推演，输出对方反驳 / 折中方案 / 谈判话术，已推演建议按钮显绿色勾标记
-  - 行业标准对比：审查时自动检索标准条款库，对核心条款输出差异对比
-  - 导出审查报告（HTML / PDF / Word），含风险证据、法条时效、标准对比、增量审查记录
-- 📝 OnlyOffice 在线协同编辑
-  - 文档内精准定位条款
-  - 添加批注与修改建议
-  - 一键采纳建议并高亮变更内容
-  - 版本管理：任意两版本对比、缺失条款一键补全
-- 📚 法律知识库
-  - 支持法律法规、裁判文书、审查规则导入
-  - 支持向量检索、删除与模板下载
-  - 行业标准条款库：公共库 + 私有库，适用合同类型多选，审查时自动对比
-  - 法律时效性监控：标注现行 / 已修订 / 已废止，附替代版本提示
-- 🏢 企业核验
-  - 企查查 OpenAPI v2（AppKey + SecretKey + MD5 签名）
-  - 天眼查 Bearer 鉴权
-  - 无 Token 时自动回退到网页搜索，提取法定代表人 / 统一社会信用代码 / 风险关键词
-- 📋 审查模板管理
-  - 在线 CRUD，支持合同类型关键词、审查点、核心目的、报告章节配置
-  - 版本快照与回滚，系统模板不可删除
-- 🤖 智能问答
-  - SSE 流式输出
-  - 携带上下文会话历史，按合同隔离问答记录
-  - 支持知识库检索 + 受控联网搜索（含广告过滤与重试）
-- 📋 审查记录管理
-  - 历史记录搜索与多维度筛选（状态、合同类型）
-  - 展示合同类型、审查立场与风险点统计
-- 🧠 向量检索与 AI 能力
-  - Embedding / Rerank
-  - Milvus 向量数据库
-  - OpenAI Compatible API
-  - 检索优化：候选集最小 48 条 + 单 query 降级补充 + ngram 二次切分提升短关键词召回
-  - 分通道检索：通道 A（审查维度）+ 通道 B（合同内容），配额融合 + 软阈值
-  - 谈判博弈模拟：LLM 单次反向论证，推断对方立场与折中方案
-  - 视觉模型印章分析：PS 疑似 / 位置合规 / 印章类型识别
-- 🐳 Docker 一键部署
-  - PostgreSQL
-  - Milvus
-  - MinIO
-  - OnlyOffice
+本仓库是我在开源合同审查应用基础上持续开发的项目版本，重点扩展可配置审批规则、审查立场处理、DOCX 红线工作流、钉钉接入、审计记录与检索评测。上游来源和许可证见文末。
 
-***
+## 业务流程
 
-## 🖼️ Demo
-
-| 首页             | 合同分析           |
-| -------------- | -------------- |
-| ![](img/1.jpg) | ![](img/2.jpg) |
-
-| 风险审查           | 修改建议           |
-| -------------- | -------------- |
-| ![](img/3.jpg) | ![](img/5.jpg) |
-
-| 知识库             | 智能问答           |
-| --------------- | -------------- |
-| ![](img/10.jpg) | ![](img/9.jpg) |
-
-更多演示图：
-
-![](img/7.jpg)
-
-![](img/12.jpg)
-
-![](img/6.jpg)
-
-![](img/4.jpg)
-
-![](img/11.jpg)
-
-***
-
-## 🏗️ Tech Stack
-
-### Frontend
-
-- Vue 3
-- Vite
-- Element Plus
-- Tailwind CSS
-- OnlyOffice Document Editor
-
-### Backend
-
-- Node.js
-- Express
-- Knex
-- PostgreSQL
-- Socket.IO
-
-### AI / RAG
-
-- OpenAI Compatible Chat API
-- Embedding
-- Rerank
-- Milvus
-- 法律 Markdown 解析
-- 裁判文书 JSON 解析
-- 谈判博弈模拟（LLM 反向论证）
-- 视觉模型印章分析
-- 企查查 / 天眼查企业核验
-
-### Infrastructure
-
-- Docker Compose
-- PostgreSQL
-- Milvus
-- MinIO
-- etcd
-- OnlyOffice
-
-***
-
-## 📁 Project Structure
-
-```text
-.
-├── backend/
-│   ├── data/              # 法律法规、裁判文书、模板
-│   ├── routes/            # API 路由（contracts / knowledge / standards / ...）
-│   ├── services/          # AI / 向量库 / 检索 / 谈判模拟 / 企业核验
-│   └── uploads/           # 上传目录（已忽略）
-│
-├── frontend/
-│   ├── src/               # Vue 源码
-│   └── dist/              # 构建产物（已忽略）
-│
-├── data/
-│   ├── postgres/          # PostgreSQL 数据目录
-│   ├── milvus/            # Milvus / MinIO / etcd
-│   └── onlyoffice/        # OnlyOffice 数据目录
-│
-├── docker-compose.yml
-└── README.md
+```mermaid
+flowchart TD
+    A[Web 上传 DOCX / 文本型 PDF] --> C[预分析：合同类型、主体与审查立场]
+    B[钉钉文件接入] --> C
+    C --> D[匹配审查模板与 Playbook]
+    D --> E[法条 / 案例检索、主体核验与硬性规则检查]
+    E --> F[LLM 生成结构化风险与修改建议]
+    F --> G[审批引擎：PASS / MANUAL / REJECT]
+    G --> H[审查报告、决策记录与审计事件]
+    H --> I[人工确认 / 人工改判]
+    H --> J[DOCX 红线稿]
+    J --> K[标记对方确认]
+    K --> L[采纳修改并生成正式版]
 ```
 
-***
+审批确认和红线稿确认分别维护状态：前者记录审查结论的处理结果，后者控制合同修改稿的采纳流程。
 
-## 🚀 Quick Start
+## Agent Harness 工程设计
 
-### 1. Clone Repository
+系统采用代码编排的领域工作流。模型负责合同理解与建议生成，业务代码负责规则计算、任务进度、文档写入、确认流程和结果持久化。
 
-```bash
-git clone <your-repo-url>
-cd contract-review
+| 工程设计 | 当前实现 | 代码入口 |
+| --- | --- | --- |
+| 任务生命周期 | 按文本提取、检索、核验、规则检查、模型审查等阶段追踪任务，通过 Socket.IO 推送进度，并保存业务状态与分析结果 | [analysisJob.js](backend/services/contractAnalysis/analysisJob.js)、[backgroundAnalysis.js](backend/services/contractAnalysis/backgroundAnalysis.js) |
+| 可配置决策策略 | 按合同类型匹配 Playbook，结合禁止条款、风险等级、缺失条款和金额阈值输出 `PASS / MANUAL / REJECT`，记录规则 ID、原因码与策略版本 | [playbook/](backend/services/playbook/)、[approvalEngine.js](backend/services/approvalEngine.js) |
+| 审查上下文约束 | 优先采用用户明确选择的审查立场，支持按我方组织匹配合同主体；结合独立的金额算术检查，补充模型审查结果 | [perspective.js](backend/services/contractAnalysis/perspective.js)、[amountArithmeticCheck.js](backend/services/amountArithmeticCheck.js) |
+| 文档写入保护 | 仅将同时包含原文与替换文本的建议转为红线；先在临时副本生成，定位全部失败时不覆盖当前合同；记录成功与失败数量 | [redlineWorkflow.js](backend/services/contractAnalysis/redlineWorkflow.js)、[docxEdit.js](backend/services/contractAnalysis/docxEdit.js) |
+| 人工确认与版本管理 | 红线稿进入 `awaiting_counterpart` 状态后，默认禁止直接采纳；标记确认后生成正式版，并保存版本快照 | [redlineWorkflow.js](backend/services/contractAnalysis/redlineWorkflow.js)、[version.js](backend/services/contractAnalysis/version.js) |
+| 外部接入与操作留痕 | 钉钉 Worker 接收文件和确认指令，后端执行审查流程；按消息 ID 检查重复接入，记录决策、确认及人工改判事件 | [dingtalk-worker/](dingtalk-worker/)、[dingtalk/](backend/services/dingtalk/)、[auditService.js](backend/services/auditService.js) |
+| 模型容错与检索评测 | LLM 调用支持超时、有限重试与退避；Chat、Embedding、Rerank 分别配置，并使用固定样本评估检索召回、排序和时延 | [llmClient.js](backend/services/llmClient.js)、[eval-rag.js](backend/scripts/eval-rag.js) |
+
+## 功能范围
+
+- **合同审查**：DOCX / 文本型 PDF 上传、类型与主体识别、风险分级、条款建议、专项与增量审查、审查历史和报告导出。
+- **文档协作**：OnlyOffice 在线审阅、条款定位、批注、DOCX 红线稿、修改采纳及版本对比。
+- **知识增强**：法律法规、裁判文书、审查规则与行业标准条款管理，结合合同内容和审查维度检索依据。
+- **辅助分析**：合同上下文问答、谈判建议、企业主体信息查询及印章分析；相关能力依赖对应模型或外部服务配置。
+- **企业接入**：可选钉钉文件接入、结果通知，以及 `确认 #id` / `驳回 #id` 指令处理。
+
+## 技术栈
+
+| 层次 | 技术 |
+| --- | --- |
+| 前端 | Vue 3、Vite、Element Plus、Tailwind CSS、OnlyOffice |
+| 后端与数据 | Node.js、Express、Knex、PostgreSQL、Socket.IO |
+| 模型与检索 | OpenAI 兼容接口、独立 Embedding / Rerank 客户端、Milvus 或 PostgreSQL 存储检索 |
+| 接入与运行 | Python 钉钉 Worker、Docker Compose、Windows 启动脚本 |
+
+检索模式由 `VECTOR_STORE` 控制：
+
+| 模式 | 行为 |
+| --- | --- |
+| `keyword` | 使用关键词与 n-gram 检索，检索过程不调用 Embedding / Rerank / Milvus |
+| `pg` | 在 PostgreSQL 中存储向量，应用侧计算相似度，并结合关键词召回 |
+| `milvus` | 使用 Milvus 向量召回，并结合关键词检索与重排 |
+
+## 本地启动
+
+以下为 **Windows PowerShell** 示例，统一使用前端 `8080`、后端 `3001`、PostgreSQL `5434`、OnlyOffice `8082`。需要 Node.js / npm 和 Docker Compose；钉钉 Worker 可按需启用。
+
+### 1. 获取代码并准备配置
+
+私有仓库需要具备访问权限的 GitHub 账号。
+
+```powershell
+git clone https://github.com/DorianYoung7702/contract-review-agent.git
+Set-Location contract-review-agent
+Copy-Item backend/.env.example backend/.env
+Copy-Item frontend/.env.example frontend/.env.development
 ```
 
-***
+在 `backend/.env` 中填写可用的 `LLM_BASE_URL`、`LLM_API_KEY` 和 `LLM_MODEL`，并调整以下配置。示例以关键词检索启动，向量模式可在后续配置。
 
-### 2. Install Dependencies
+```dotenv
+PORT=3001
+DATABASE_URL=postgres://contract_review:contract_review@127.0.0.1:5434/contract_review
+POSTGRES_PORT=5434
+VECTOR_STORE=keyword
 
-```bash
-# backend
-cd backend
-npm install
-
-# frontend
-cd ../frontend
-npm install
+ONLYOFFICE_URL=http://localhost:8082
+ONLYOFFICE_JWT_SECRET=替换为你自己的随机密钥
+APP_HOST=http://localhost:3001
+BACKEND_URL_FOR_DOCKER=http://host.docker.internal:3001
+FRONTEND_URL=http://localhost:8080
+DEFAULT_REVIEW_ORGANIZATION=填写我方企业名称
 ```
 
-***
+在 `frontend/.env.development` 中设置：
 
-### 3. Configure Environment Variables
-
-```bash
-# backend
-copy .env.example .env
-
-# frontend
-copy .env.example .env
+```dotenv
+VITE_APP_BACKEND_API_URL=http://localhost:3001
+VITE_APP_ONLYOFFICE_URL=http://localhost:8082/
 ```
 
-### Backend Required Variables
+后端地址不包含 `/api`，前端会自动拼接。OnlyOffice 的浏览器访问地址与容器回调后端地址分别配置。
 
-```env
-LLM_API_KEY=
-EMBEDDING_API_KEY=
-ONLYOFFICE_JWT_SECRET=
+### 2. 启动基础服务
+
+在仓库根目录执行。显式加载 `backend/.env`，使 OnlyOffice 容器与后端使用同一 JWT 密钥。
+
+```powershell
+docker compose --env-file backend/.env up -d postgres onlyoffice
 ```
 
-同时需要配置：
+本地 Compose 管理基础服务；前后端分别通过下面的命令启动。
 
-- PostgreSQL
-- Milvus
-- OnlyOffice
+### 3. 启动后端
 
-***
+新开终端，进入仓库的 `backend` 目录：
 
-### 4. Start Infrastructure Services
-
-```bash
-docker compose up -d
-```
-
-***
-
-### 5. Start Backend
-
-```bash
-cd backend
-
+```powershell
+npm ci
 npm run dev
 ```
 
-首次启动会：
+后端启动时初始化数据库表、模板与标准条款，并在后台导入法律和案例知识。入口地址为 `http://localhost:3001`，浏览器页面入口仍为前端地址。
 
-- 初始化数据库
+### 4. 启动前端
 
-***
+新开终端，进入仓库的 `frontend` 目录：
 
-### 6. Start Frontend
-
-```bash
-cd frontend
-
+```powershell
+npm ci
 npm run dev
 ```
 
-默认访问地址：
+打开 `http://localhost:8080`，上传一份 DOCX 或可复制文本的 PDF，选择审查立场后开始分析。
 
-```text
-http://localhost:8080
+### 5. 可选：向量检索与钉钉
+
+启用向量检索时，在 `backend/.env` 中将 `VECTOR_STORE` 改为 `pg` 或 `milvus`，分别填写 `EMBEDDING_*` 与 `RERANK_*`。使用 Milvus 时，在仓库根目录执行：
+
+```powershell
+docker compose --env-file backend/.env up -d milvus
 ```
 
-***
+更换向量模型、维度或从 hash 回退向量切换到真实 Embedding 后，在 `backend` 目录重建向量并评测：
 
-## ⚙️ Environment Variables
-
-### Backend
-
-| Variable                    | Description           |
-| --------------------------- | --------------------- |
-| `LLM_BASE_URL`              | LLM API 地址            |
-| `LLM_API_KEY`               | LLM API Key           |
-| `LLM_MODEL`                 | 聊天模型                  |
-| `EMBEDDING_BASE_URL`        | Embedding API         |
-| `EMBEDDING_MODEL`           | 向量模型                  |
-| `RERANK_MODEL`              | 重排模型                  |
-| `DATABASE_URL`              | PostgreSQL 连接         |
-| `VECTOR_STORE`              | 向量数据库类型               |
-| `MILVUS_*`                  | Milvus 配置             |
-| `ONLYOFFICE_URL`            | OnlyOffice 地址         |
-| `ONLYOFFICE_JWT_SECRET`     | OnlyOffice JWT Secret |
-| `VISION_MODEL_NAME`         | 视觉模型（印章分析，可选）         |
-| `COMPANY_API_TOKEN`         | 企业核验 AppKey（企查查）      |
-| `COMPANY_API_SECRET`        | 企业核验 SecretKey（企查查）   |
-| `KNOWLEDGE_SCORE_THRESHOLD` | 知识库 rerank 阈值（默认 0.6） |
-
-### Frontend
-
-| Variable                   | Description   |
-| -------------------------- | ------------- |
-| `VITE_APP_BACKEND_API_URL` | 后端 API 地址     |
-| `VITE_APP_ONLYOFFICE_URL`  | OnlyOffice 地址 |
-
-***
-
-## 📚 Knowledge Base Initialization
-
-默认配置：
-
-```env
-KNOWLEDGE_SEED_TYPES=law,case
-LAW_SEED_DIRS=社会法,民法典
-CASE_SEED_DIR=data/candidate_55192
-CASE_SEED_LIMIT=10
+```powershell
+npm run reembed:rag
+npm run eval:rag
 ```
 
-### 仅初始化法律法规
+进行语义检索效果评测时设置 `EMBEDDING_ALLOW_HASH_FALLBACK=false`，并确认实际使用的 Embedding / Rerank 服务，避免将回退路径计为在线模型效果。
 
-```env
-KNOWLEDGE_SEED_TYPES=law
+钉钉配置见 [Worker 说明](dingtalk-worker/README.md)。从 `dingtalk-worker/.env.example` 复制配置后填写应用凭据，并将其中的 `DINGTALK_INTAKE_TOKEN` 与 `backend/.env` 保持一致，再在根目录执行：
+
+```powershell
+docker compose --env-file backend/.env --profile dingtalk up -d dingtalk-worker
 ```
 
-### 仅初始化裁判文书
+## 验证与评测
 
-```env
-KNOWLEDGE_SEED_TYPES=case
+后端已有审批规则、审查立场、金额计算、企业信息补全、DOCX 红线、钉钉确认和检索模式的测试文件。在 `backend` 目录执行：
+
+```powershell
+npm test
+npm run eval:rag -- --k=5,10 --limit=10
 ```
 
-### 初始化指定法律目录
+RAG 评测基于 [固定样本集](backend/tests/fixtures/rag/golden.json)，输出 Recall@5、Recall@10、MRR 和时延指标，报告保存到 `backend/evals/results/`。效果数据应同时记录样本集、模型、检索模式和运行环境。
 
-```env
-LAW_SEED_DIRS=经济法,行政法
-```
+前端构建验证在 `frontend` 目录执行：
 
-***
-
-## 🧩 Built-in Dataset
-
-默认仓库仅包含部分法律法规与裁判文书数据。
-
-完整法律/案例数据可按需自备 Markdown / JSON，放入 `backend/data/laws` 与案例目录后启动导入（见知识库初始化说明）。
-
-***
-
-## 🛠️ Build
-
-```bash
-cd frontend
-
+```powershell
 npm run build
 ```
 
-当前构建配置：
+## 目录结构
 
-- Vite ESM
-- 路由懒加载
-- Rollup Manual Chunks
-- 第三方依赖拆包优化
+```text
+backend/
+  routes/                 合同、知识库、模板、审批与外部接入 API
+  services/
+    contractAnalysis/     审查编排、进度、立场、文档编辑与版本流程
+    playbook/             审批策略加载与匹配
+    dingtalk/             文件接入、审查通知与人工确认
+    vectorStore/          知识导入、向量与关键词检索
+    approvalEngine.js     审批规则计算
+    auditService.js       审计事件读写
+  data/                   法律、案例、规则、模板与 Playbook
+  tests/                  测试及固定评测样本
+  scripts/                RAG 评测与向量重建
+frontend/                 Vue 审查工作台
+dingtalk-worker/           钉钉消息接入服务
+scripts/                  Windows 本地运行脚本
+docker-compose.yml        基础服务与可选 Worker 配置
+```
 
-***
+## 当前实现边界
 
-## 🔐 Security Notes
+- 文件审查支持 DOCX 和文本型 PDF。扫描件 PDF 会被识别并提示转换；正文红线生成仅支持 DOCX。
+- 分析任务使用进程内任务表，业务状态和结果写入数据库；当前实现未提供跨进程任务队列和进程崩溃后的自动续跑。
+- 本 README 描述仓库实现与运行方法。真实合同效果、外部服务联通情况及生产身份权限，需要在具体部署环境中验证。
 
-- 不要提交：
-  - `.env`
-  - API Key
-  - 数据库密码
-  - 上传文件
-  - Docker 数据目录
-- 联网搜索：
-  - 仅用于公开信息检索
-  - 涉及敏感内容时自动拒绝
-- 数据库存储：
-  - 仅保存路径与元数据
-  - 不保存文件二进制内容
+本地 `.env`、上传合同、数据库、日志和浏览器配置不纳入源码版本管理。`scripts/Start-ContractService.ps1` 使用固定本机路径及容器名称，迁移环境时需先调整。
 
-***
+## 来源与许可证
 
-## 📄 License
+基于 [xiaodingfeng/contract-review](https://github.com/xiaodingfeng/contract-review) 二次开发，本仓库包含面向业务流程和工程可靠性的扩展。
 
-MIT（保留上游原作者版权声明，见根目录 `LICENSE`）
-
-***
-
-## ⭐ Acknowledgements
-
-- OnlyOffice
-- Milvus
-- OpenAI
-- Vue.js
-- PostgreSQL
-- Element Plus
+项目采用 [MIT License](LICENSE)，保留原作者 Xiaodingfeng 的版权声明。
