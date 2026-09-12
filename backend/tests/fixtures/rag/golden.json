@@ -1,0 +1,174 @@
+[
+  {
+    "id": "labor-probation-6m",
+    "description": "试用期不得超过六个月",
+    "mode": "getRelevantKnowledge",
+    "k": [5, 10],
+    "query": {
+      "contractType": "劳动合同",
+      "perspective": "劳动者",
+      "reviewPoints": ["试用期期限是否合法"],
+      "corePurposes": ["审查试用期约定"],
+      "text": "试用期约定为九个月，期满后转为正式员工。"
+    },
+    "relevant": [
+      { "title_contains": "劳动合同法", "clause_id": "第十九条" }
+    ]
+  },
+  {
+    "id": "labor-compete-2y",
+    "description": "竞业限制期限不得超过二年",
+    "mode": "getRelevantKnowledge",
+    "k": [5, 10],
+    "query": {
+      "contractType": "劳动合同",
+      "perspective": "劳动者",
+      "reviewPoints": ["竞业限制期限"],
+      "corePurposes": ["竞业限制合规"],
+      "text": "离职后竞业限制期限为三年，公司按月支付补偿金。"
+    },
+    "relevant": [
+      { "title_contains": "劳动合同法", "clause_id": "第二十四条" }
+    ]
+  },
+  {
+    "id": "labor-penalty-limit",
+    "description": "违约金仅限服务期与竞业限制",
+    "mode": "getRelevantKnowledge",
+    "k": [5, 10],
+    "query": {
+      "contractType": "劳动合同",
+      "perspective": "劳动者",
+      "reviewPoints": ["违约金约定合法性"],
+      "text": "劳动者提前解除劳动合同的，应向用人单位支付违约金五万元。"
+    },
+    "relevant": [
+      { "title_contains": "劳动合同法", "clause_id": "第二十五条" }
+    ]
+  },
+  {
+    "id": "civil-breach-liability",
+    "description": "违约责任一般规定",
+    "mode": "getRelevantKnowledge",
+    "k": [5, 10],
+    "query": {
+      "contractType": "买卖合同",
+      "perspective": "买方",
+      "reviewPoints": ["违约责任", "损害赔偿"],
+      "text": "一方不履行合同义务的，应当承担继续履行、采取补救措施或者赔偿损失等违约责任。"
+    },
+    "relevant": [
+      { "title_contains": "民法典", "clause_id": "第五百七十七条" }
+    ]
+  },
+  {
+    "id": "civil-damages",
+    "description": "损失赔偿范围",
+    "mode": "getRelevantKnowledge",
+    "k": [5, 10],
+    "query": {
+      "contractType": "买卖合同",
+      "perspective": "卖方",
+      "reviewPoints": ["损失赔偿范围", "可得利益"],
+      "text": "因违约造成对方损失的，损失赔偿额应相当于因违约所造成的损失，包括合同履行后可以获得的利益。"
+    },
+    "relevant": [
+      { "title_contains": "民法典", "clause_id": "第五百八十四条" }
+    ]
+  },
+  {
+    "id": "civil-termination",
+    "description": "合同解除法定情形",
+    "mode": "getRelevantKnowledge",
+    "k": [5, 10],
+    "query": {
+      "contractType": "服务合同",
+      "perspective": "甲方",
+      "reviewPoints": ["合同解除", "根本违约"],
+      "text": "因不可抗力致使不能实现合同目的，当事人可以解除合同。"
+    },
+    "relevant": [
+      { "title_contains": "民法典", "clause_id": "第五百六十三条" }
+    ]
+  },
+  {
+    "id": "civil-liquidated-damages",
+    "description": "违约金调整",
+    "mode": "getRelevantKnowledge",
+    "k": [5, 10],
+    "query": {
+      "contractType": "买卖合同",
+      "perspective": "买方",
+      "reviewPoints": ["违约金过高或过低"],
+      "text": "约定的违约金过分高于造成的损失的，人民法院或者仲裁机构可以根据当事人的请求予以适当减少。"
+    },
+    "relevant": [
+      { "title_contains": "民法典", "clause_id": "第五百八十五条" }
+    ]
+  },
+  {
+    "id": "civil-performance",
+    "description": "全面履行与诚信",
+    "mode": "getRelevantKnowledge",
+    "k": [5, 10],
+    "query": {
+      "contractType": "买卖合同",
+      "perspective": "买方",
+      "reviewPoints": ["合同履行原则"],
+      "text": "当事人应当按照约定全面履行自己的义务，并遵循诚信原则。"
+    },
+    "relevant": [
+      { "title_contains": "民法典", "clause_id": "第五百零九条" }
+    ]
+  },
+  {
+    "id": "civil-sale-definition",
+    "description": "买卖合同定义",
+    "mode": "searchMulti",
+    "k": [5, 10],
+    "queries": ["买卖合同是出卖人转移标的物的所有权于买受人，买受人支付价款"],
+    "relevant": [
+      { "title_contains": "民法典", "clause_id": "第五百九十五条" }
+    ]
+  },
+  {
+    "id": "civil-payment-price",
+    "description": "买受人支付价款",
+    "mode": "searchMulti",
+    "k": [5, 10],
+    "queries": ["买受人应当按照约定的数额和支付方式支付价款"],
+    "relevant": [
+      { "title_contains": "民法典", "clause_id": "第六百二十六条" }
+    ]
+  },
+  {
+    "id": "civil-loan",
+    "description": "借款合同定义",
+    "mode": "getRelevantKnowledge",
+    "k": [5, 10],
+    "query": {
+      "contractType": "借款合同",
+      "perspective": "出借人",
+      "reviewPoints": ["借款合同效力"],
+      "text": "借款合同是借款人向贷款人借款，到期返还借款并支付利息的合同。"
+    },
+    "relevant": [
+      { "title_contains": "民法典", "clause_id": "第六百六十七条" }
+    ]
+  },
+  {
+    "id": "civil-lease",
+    "description": "租赁合同定义",
+    "mode": "getRelevantKnowledge",
+    "k": [5, 10],
+    "query": {
+      "contractType": "租赁合同",
+      "perspective": "出租人",
+      "reviewPoints": ["租赁合同基本规定"],
+      "text": "租赁合同是出租人将租赁物交付承租人使用、收益，承租人支付租金的合同。"
+    },
+    "relevant": [
+      { "title_contains": "民法典", "clause_id": "第七百零三条" }
+    ]
+  }
+]

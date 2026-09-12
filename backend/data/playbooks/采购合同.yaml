@@ -1,0 +1,66 @@
+contract_type: 采购合同
+playbook_id: purchase_v1
+version: "1.0"
+auto_approval_limit: 500000
+medium_risk_threshold: 2
+type_keywords:
+  - 采购
+  - 购销
+  - 供货
+  - 买卖
+
+rules:
+  - id: PAYMENT_001
+    name: 预付款比例
+    requirement: 预付款不得超过30%
+    severity: HIGH
+    auto_decision: MANUAL
+    required: false
+    matcher:
+      keywords: ["预付款", "预付", "定金"]
+      max_percent: 30
+
+  - id: LIABILITY_001
+    name: 供应商违约责任
+    requirement: 必须包含供应商违约责任
+    severity: HIGH
+    auto_decision: MANUAL
+    required: true
+    matcher:
+      keywords: ["违约责任", "逾期交货", "迟延交付", "违约金"]
+
+  - id: IP_001
+    name: 知识产权
+    requirement: 项目成果知识产权归我方
+    severity: HIGH
+    auto_decision: MANUAL
+    required: true
+    matcher:
+      keywords: ["知识产权", "著作权", "成果归属"]
+
+  - id: CONFIDENTIAL_001
+    name: 保密条款
+    requirement: 必须存在保密条款
+    severity: HIGH
+    auto_decision: MANUAL
+    required: true
+    matcher:
+      keywords: ["保密", "商业秘密", "保密义务"]
+
+  - id: JURISDICTION_001
+    name: 管辖法院
+    requirement: 原则上要求我方所在地法院
+    severity: MEDIUM
+    auto_decision: MANUAL
+    required: false
+    matcher:
+      keywords: ["管辖", "仲裁", "争议解决"]
+
+  - id: FORBIDDEN_EXCLUSIVE_001
+    name: 禁止绝对免责
+    requirement: 不得约定供应商对重大过失完全免责
+    severity: HIGH
+    auto_decision: REJECT
+    forbidden: true
+    matcher:
+      keywords: ["概不负责", "不承担任何责任", "完全免责"]

@@ -1,0 +1,17 @@
+{
+  "name": "合规采购合同样例 A",
+  "contract_type": "采购合同",
+  "contractProfile": { "amount": 200000 },
+  "structuredResult": {
+    "contract_type": "采购合同",
+    "dispute_points": [],
+    "missing_clauses": [],
+    "modification_suggestions": [],
+    "hard_violations": [],
+    "findings": []
+  },
+  "expected": {
+    "decision": "PASS",
+    "passed_rule_ids_includes": ["PAYMENT_001", "LIABILITY_001", "IP_001", "CONFIDENTIAL_001"]
+  }
+}

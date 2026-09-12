@@ -1,0 +1,27 @@
+{
+  "name": "高预付款采购合同样例 B",
+  "contract_type": "采购合同",
+  "contractProfile": { "amount": 200000 },
+  "structuredResult": {
+    "contract_type": "采购合同",
+    "dispute_points": [
+      {
+        "rule_id": "PAYMENT_001",
+        "title": "预付款比例过高",
+        "severity": "HIGH",
+        "reason": "合同约定预付款 80%，超过 Playbook 上限 30%",
+        "current_value": "80%",
+        "standard_value": "30%"
+      }
+    ],
+    "missing_clauses": [],
+    "modification_suggestions": [],
+    "hard_violations": [],
+    "findings": []
+  },
+  "expected": {
+    "decision": "MANUAL",
+    "matched_rule_ids_includes": ["PAYMENT_001"],
+    "reason_codes_includes": ["HIGH_RISK"]
+  }
+}

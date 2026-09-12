@@ -1,0 +1,18 @@
+contract_type: 劳动合同
+playbook_id: labor_v1_stub
+version: "0.1"
+auto_approval_limit: 0
+medium_risk_threshold: 1
+type_keywords:
+  - 劳动
+  - 用工
+  - 雇佣
+rules:
+  - id: LABOR_STUB_001
+    name: 占位规则
+    requirement: 一期仅占位，默认转人工
+    severity: HIGH
+    auto_decision: MANUAL
+    required: true
+    matcher:
+      keywords: ["劳动合同"]

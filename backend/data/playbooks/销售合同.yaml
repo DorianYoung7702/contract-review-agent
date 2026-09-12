@@ -1,0 +1,75 @@
+contract_type: 销售合同
+playbook_id: sales_v1
+version: "1.0"
+auto_approval_limit: 500000
+medium_risk_threshold: 2
+type_keywords:
+  - 销售
+  - 出售
+  - 经销
+  - 供货销售
+
+rules:
+  - id: PAYMENT_S001
+    name: 回款期限
+    requirement: 付款期限原则上不超过验收后30日
+    severity: HIGH
+    auto_decision: MANUAL
+    required: false
+    matcher:
+      keywords: ["付款", "支付", "结算"]
+      max_days: 30
+
+  - id: LIABILITY_S001
+    name: 买方违约责任
+    requirement: 必须约定买方逾期付款违约责任
+    severity: HIGH
+    auto_decision: MANUAL
+    required: true
+    matcher:
+      keywords: ["逾期付款", "违约金", "滞纳金", "违约责任"]
+
+  - id: WARRANTY_S001
+    name: 质保责任边界
+    requirement: 质保范围与期限应明确，避免无限责任
+    severity: MEDIUM
+    auto_decision: MANUAL
+    required: false
+    matcher:
+      keywords: ["质保", "质量保证", "保修"]
+
+  - id: IP_S001
+    name: 知识产权保留
+    requirement: 我方既有知识产权应予保留
+    severity: HIGH
+    auto_decision: MANUAL
+    required: true
+    matcher:
+      keywords: ["知识产权", "商标", "专利"]
+
+  - id: CONFIDENTIAL_S001
+    name: 保密条款
+    requirement: 必须存在保密条款
+    severity: HIGH
+    auto_decision: MANUAL
+    required: true
+    matcher:
+      keywords: ["保密", "商业秘密"]
+
+  - id: JURISDICTION_S001
+    name: 管辖法院
+    requirement: 原则上要求我方所在地法院或约定仲裁
+    severity: MEDIUM
+    auto_decision: MANUAL
+    required: false
+    matcher:
+      keywords: ["管辖", "仲裁", "争议解决"]
+
+  - id: FORBIDDEN_PENALTY_S001
+    name: 禁止畸高违约金无上限
+    requirement: 不得约定无上限且明显畸高的惩罚性违约金且不可协商
+    severity: HIGH
+    auto_decision: REJECT
+    forbidden: true
+    matcher:
+      keywords: ["按日千分之", "无上限违约金", "惩罚性违约金且不得减免"]
